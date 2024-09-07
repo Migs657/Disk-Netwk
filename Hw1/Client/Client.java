@@ -1,4 +1,5 @@
 import java.net.*;
+import java.util.Scanner;
 import java.io.*;
 import javax.net.SocketFactory;
 import javax.net.ssl.*;
@@ -17,11 +18,17 @@ public class Client {
             Socket s = sf.createSocket("localhost", port);
             PrintWriter out = new PrintWriter(s.getOutputStream());
             BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-            out.write("Happy new semester!\n");
+            Scanner input = new Scanner(System.in);
+            String msg;
+            System.out.println("Type 1 to ask Serrver for current time\n \nType 2 to ask Server for IP of lacal");            
+            msg = input.nextLine();
+            //System.out.println("Message sent: " + msg);
+            out.write(msg + "\n");
             out.flush();
-            System.out.println("Has sent message!");
+            //System.out.println("Has sent message!");
             String answer = in.readLine();
             System.out.println(answer);
+            input.close();
             out.close();
             in.close();
         } catch (Exception e) {

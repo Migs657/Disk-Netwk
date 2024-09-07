@@ -5,6 +5,9 @@ import java.net.*;
 import javax.net.*;
 import javax.net.ssl.*;
 import java.security.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.net.InetAddress;
 
 public class Server {
     // hold the name of the keystore containing public and private keys
@@ -44,8 +47,23 @@ public class Server {
             BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
             System.out.println("To get message ...");
             String msg = in.readLine();
-            System.out.println("Got message: " + msg);
-            out.write("Happy new semester!\n");
+            int iMsg = Integer.valueOf(msg);
+            System.out.println("Got message: " + iMsg);
+            if(iMsg == 1){
+                LocalDateTime myDate = LocalDateTime.now();
+                DateTimeFormatter myFormatedDate = DateTimeFormatter.ofPattern("yyyy/MM/dd:HH:mm:ss");
+                msg = myDate.format(myFormatedDate) + "\n";
+                out.write(msg + "\n");
+            }
+            else if (iMsg == 2){
+                InetAddress addr = InetAddress.getLocalHost();
+                msg = addr.getHostAddress();
+                out.write(msg + "\n");
+            }
+            else{
+                out.write("Invalid input\n");
+            }
+            //out.write("Happy new semester!\n");
             out.flush();
             in.close();
             out.close();
