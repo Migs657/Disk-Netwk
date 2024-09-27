@@ -3,18 +3,18 @@
 
 # Parameters
 
-CLIENT = date_client
-SERVER = date_server
+CLIENT = IntStore_client
+SERVER = IntStore_server
 
 SOURCES_CLNT.c = 
 SOURCES_CLNT.h = 
 SOURCES_SVC.c = 
 SOURCES_SVC.h = 
-SOURCES.x = date.x
+SOURCES.x = IntStore.x
 
-TARGETS_SVC.c = date_svc.c date_server.c   
-TARGETS_CLNT.c = date_clnt.c date_client.c   
-TARGETS = date.h   date_clnt.c date_svc.c date_client.c date_server.c
+TARGETS_SVC.c = IntStore_svc.c IntStore_server.c IntStore_xdr.c 
+TARGETS_CLNT.c = IntStore_clnt.c IntStore_client.c IntStore_xdr.c 
+TARGETS = IntStore.h IntStore_xdr.c IntStore_clnt.c IntStore_svc.c IntStore_client.c IntStore_server.c
 
 OBJECTS_CLNT = $(SOURCES_CLNT.c:%.c=%.o) $(TARGETS_CLNT.c:%.c=%.o)
 OBJECTS_SVC = $(SOURCES_SVC.c:%.c=%.o) $(TARGETS_SVC.c:%.c=%.o)
