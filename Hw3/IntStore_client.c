@@ -7,7 +7,7 @@
 #include "IntStore.h"
 // #include <stdio.h>
 
-void intstore_prog_1(char *host, arr Arr, char* op)
+void intstore_prog_1(char *host, arr ary, char *op)
 {
 	CLIENT *clnt;
 	char **result_1;
@@ -26,7 +26,7 @@ void intstore_prog_1(char *host, arr Arr, char* op)
 		exit(1);
 	}
 #endif /* DEBUG */
-	if(strcmp(op,"") == 0)
+	if (strcmp(op, "") == 0)
 	{
 		result_4 = checkin_intstore_1((void *)&checkin_intstore_1_arg, clnt);
 		if (result_4 == (char **)NULL)
@@ -38,22 +38,35 @@ void intstore_prog_1(char *host, arr Arr, char* op)
 			printf("%s\n", *result_4);
 		}
 	}
-	else if (strcmp(op,"append") == 0)
+	else if (strcmp(op, "append") == 0)
 	{
 		printf("In append\n");
-		append_intstore_1_arg = Arr;
+		append_intstore_1_arg = ary;
 		result_1 = append_intstore_1(&append_intstore_1_arg, clnt);
 		if (result_1 == (char **)NULL)
 		{
 			clnt_perror(clnt, "call failed");
 		}
 	}
+	else if (strcmp(op, "query") == 0)
+	{
+		printf("In query\n");
+		query_intstore_1_arg = ary.Arr[0];
+		result_2 = query_intstore_1(&query_intstore_1_arg, clnt);
+		if (result_2 == (char **)NULL)
+		{
+			clnt_perror(clnt, "call failed");
+		}
+		if(strcmp(*result_2, "-1") == 0){
+			printf("out of bouds\n");
+		}
+		else{
+			printf("at pose %d we have %s\n",ary.Arr[0], *result_2);
+		}
+		
+	}
 
 	/*
-	result_2 = query_intstore_1(&query_intstore_1_arg, clnt);
-	if (result_2 == (char **) NULL) {
-		clnt_perror (clnt, "call failed");
-	}
 	result_3 = remove_intstore_1(&remove_intstore_1_arg, clnt);
 	if (result_3 == (char **) NULL) {
 		clnt_perror (clnt, "call failed");
@@ -101,13 +114,14 @@ int main(int argc, char *argv[])
 			   "Enter -1 to end this client program\n");
 
 		scanf("%[^\n]s", arguments);
-		while ((getchar()) != '\n');
+		while ((getchar()) != '\n')
+			;
 		// printf("Test1\n");
 		printf("%s\n", arguments);
 		// printf("%c\n",arguments[0]);
 		op = strtok(arguments, " ");
-		printf("current op %s and compared to append %d\n",op, strcmp(op,"append"));
-		if (strcmp(op,"append") == 0)
+		printf("current op %s and compared to append %d\n", op, strcmp(op, "append"));
+		if (strcmp(op, "append") == 0)
 		{
 			printf("In append client area\n");
 			// printf("%s\n", tempArg);
@@ -119,10 +133,10 @@ int main(int argc, char *argv[])
 			tempArg = strtok(NULL, " ");
 			printf("Test current arg %s\n", tempArg);
 			if (tempArg != NULL)
-				{
-					aray.Arr[i] = atoi(tempArg);
-					printf("Test current in Array %d\n", aray.Arr[i]);
-				}
+			{
+				aray.Arr[i] = atoi(tempArg);
+				printf("Test current in Array %d\n", aray.Arr[i]);
+			}
 			while (tempArg != NULL)
 			{
 				argCounter++;
@@ -152,18 +166,29 @@ int main(int argc, char *argv[])
 			}
 			else
 			{
-				printf("current op %s\n",op);
+				printf("current op %s\n", op);
 				intstore_prog_1(host, aray, op);
 			}
 			printf("\n");
 		}
-		if (strcmp(op,"-1") == 0)
+		else if (strcmp(op, "query") == 0)
+		{
+			printf("in main query\n");
+			tempArg = strtok(NULL, " ");
+			printf("Test current arg %s\n", tempArg);
+			if (tempArg != NULL)
+			{
+				aray.Arr[0] = atoi(tempArg);
+				printf("Test current in Array %d\n", aray.Arr[0]);
+				intstore_prog_1(host, aray, op);
+			}
+		}
+		else if (strcmp(op, "-1") == 0)
 		{
 			leave = -1;
 		}
-		//leave = -1;
+		// leave = -1;
 	}
 
 	exit(0);
 }
-
