@@ -51,6 +51,12 @@ intstore_prog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 		local = (char *(*)(char *, struct svc_req *)) remove_intstore_1_svc;
 		break;
 
+	case checkIn_INTSTORE:
+		_xdr_argument = (xdrproc_t) xdr_void;
+		_xdr_result = (xdrproc_t) xdr_wrapstring;
+		local = (char *(*)(char *, struct svc_req *)) checkin_intstore_1_svc;
+		break;
+
 	default:
 		svcerr_noproc (transp);
 		return;

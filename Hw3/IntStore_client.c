@@ -8,7 +8,7 @@
 
 
 void
-intstore_prog_1(char *host)
+intstore_prog_1(char *host, arr Arr,char op)
 {
 	CLIENT *clnt;
 	char * *result_1;
@@ -17,7 +17,9 @@ intstore_prog_1(char *host)
 	int  query_intstore_1_arg;
 	char * *result_3;
 	int  remove_intstore_1_arg;
-
+	char * *result_4;
+	char *checkin_intstore_1_arg;
+printf("Test2");
 #ifndef	DEBUG
 	clnt = clnt_create (host, INTSTORE_PROG, INTSTORE_VERS, "udp");
 	if (clnt == NULL) {
@@ -25,8 +27,18 @@ intstore_prog_1(char *host)
 		exit (1);
 	}
 #endif	/* DEBUG */
-
-	result_1 = append_intstore_1(&append_intstore_1_arg, clnt);
+printf("Test3");
+if(op == '\0'){
+	printf("Test4");
+	result_4 = checkin_intstore_1((void*)&checkin_intstore_1_arg, clnt);
+	if (result_4 == (char **) NULL) {
+		clnt_perror (clnt, "call failed");
+	}
+	else{
+		printf("%s\n",result_4);
+	}
+}
+	/*result_1 = append_intstore_1(&append_intstore_1_arg, clnt);
 	if (result_1 == (char **) NULL) {
 		clnt_perror (clnt, "call failed");
 	}
@@ -38,6 +50,10 @@ intstore_prog_1(char *host)
 	if (result_3 == (char **) NULL) {
 		clnt_perror (clnt, "call failed");
 	}
+	result_4 = checkin_intstore_1((void*)&checkin_intstore_1_arg, clnt);
+	if (result_4 == (char **) NULL) {
+		clnt_perror (clnt, "call failed");
+	}*/
 #ifndef	DEBUG
 	clnt_destroy (clnt);
 #endif	 /* DEBUG */
@@ -54,6 +70,11 @@ main (int argc, char *argv[])
 		exit (1);
 	}
 	host = argv[1];
-	intstore_prog_1 (host);
+	arr aray;
+	for(int i = 0; i < 8; i++){
+		aray.Arr[i] = 0;
+	}
+	printf("Test1");
+	intstore_prog_1 (host, aray, '\0');
 exit (0);
 }

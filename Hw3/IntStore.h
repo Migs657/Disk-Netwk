@@ -32,6 +32,9 @@ extern  char ** query_intstore_1_svc(int *, struct svc_req *);
 #define REMOVE_INTSTORE 3
 extern  char ** remove_intstore_1(int *, CLIENT *);
 extern  char ** remove_intstore_1_svc(int *, struct svc_req *);
+#define checkIn_INTSTORE 4
+extern  char ** checkin_intstore_1(void *, CLIENT *);
+extern  char ** checkin_intstore_1_svc(void *, struct svc_req *);
 extern int intstore_prog_1_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
 
 #else /* K&R C */
@@ -44,6 +47,9 @@ extern  char ** query_intstore_1_svc();
 #define REMOVE_INTSTORE 3
 extern  char ** remove_intstore_1();
 extern  char ** remove_intstore_1_svc();
+#define checkIn_INTSTORE 4
+extern  char ** checkin_intstore_1();
+extern  char ** checkin_intstore_1_svc();
 extern int intstore_prog_1_freeresult ();
 #endif /* K&R C */
 

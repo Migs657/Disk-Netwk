@@ -28,14 +28,18 @@ void date_prog_1(char *host)
 	{
 		clnt_perror(clnt, "call failed");
 	}
+	// added
 	printf("time on host %s = %ld\n", host, *result_1);
 	str_date_1_arg = *result_1;
+
 	result_2 = str_date_1(&str_date_1_arg, clnt);
 	if (result_2 == (char **)NULL)
 	{
 		clnt_perror(clnt, "call failed");
 	}
+	// added
 	printf("time on host %s = %s\n", host, *result_2);
+
 #ifndef DEBUG
 	clnt_destroy(clnt);
 #endif /* DEBUG */

@@ -5,6 +5,7 @@
  */
 
 #include "date.h"
+//add
 #include <time.h>
 
 long *
@@ -15,6 +16,7 @@ bin_date_1_svc(void *argp, struct svc_req *rqstp)
 	/*
 	 * insert server code here
 	 */
+	//add
 	result = time((long *)0);
 
 	return &result;
@@ -28,7 +30,9 @@ str_date_1_svc(long *argp, struct svc_req *rqstp)
 	/*
 	 * insert server code here
 	 */
+	//add
 	printf("str_date_1_svc: start!\n");
-	result = ctime(argp);
+	result = ctime( argp);
+	
 	return &result;
 }

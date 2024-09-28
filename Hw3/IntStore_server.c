@@ -41,3 +41,14 @@ remove_intstore_1_svc(int *argp, struct svc_req *rqstp)
 
 	return &result;
 }
+
+char **
+checkin_intstore_1_svc(void *argp, struct svc_req *rqstp)
+{
+	static char * result;
+	printf("Test5\n");
+	result = "succesful connection";
+
+	printf("Test6\n%s\nTest7\n",result);
+	return &result;
+}
