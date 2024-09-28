@@ -36,7 +36,6 @@ int sortAllNodes(void);
 
 int swapNodes(Node *first, Node *second);
 
-char* getPrompt(void);
 
 #define INTSTORE_PROG 0x31415926
 #define INTSTORE_VERS 1

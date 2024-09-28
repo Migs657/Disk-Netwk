@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
 			   "Enter -1 to end this client program\n");
 
 		scanf("%[^\n]s", arguments);
-		//arguments = getarg();
+		while ((getchar()) != '\n');
 		// printf("Test1\n");
 		printf("%s\n", arguments);
 		// printf("%c\n",arguments[0]);
@@ -161,14 +161,9 @@ int main(int argc, char *argv[])
 		{
 			leave = -1;
 		}
-		leave = -1;
+		//leave = -1;
 	}
 
 	exit(0);
 }
 
-char* getarg(){
-	char* arguments;
-	scanf("%[^\n]s", arguments);
-	return arguments;
-}
