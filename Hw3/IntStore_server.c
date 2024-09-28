@@ -5,6 +5,8 @@
  */
 
 #include "IntStore.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 Node *head;
 Node *tail;
@@ -76,6 +78,8 @@ append_intstore_1_svc(arr *argp, struct svc_req *rqstp)
 
 	printAllNodes();
 
+	result = "success";
+
 	return &result;
 }
 
@@ -83,11 +87,23 @@ char **
 query_intstore_1_svc(int *argp, struct svc_req *rqstp)
 {
 	static char *result;
+	char buff[500];
+
+	Node *cur = head;
+
+	int atPlace;
 
 	/*
 	 * insert server code here
 	 */
-
+	printf("befor itteration\n");
+	atPlace = itterateThroughList(*argp,cur);
+	printf("done with itteration\n");
+	sprintf(buff, "%d", atPlace);
+	printf("what in buff %s\n", buff);
+	result = buff;
+	//itoa(argp,result, 10);
+	printf("sending back %s\n", result);
 	return &result;
 }
 
@@ -95,6 +111,7 @@ char **
 remove_intstore_1_svc(int *argp, struct svc_req *rqstp)
 {
 	static char *result;
+	Node *cur;
 
 	/*
 	 * insert server code here
@@ -143,13 +160,14 @@ int sortAllNodes(void)
 	Node *tempNode;
 	int i = 0;
 	while (isSorted == 0)
-	{	printf("in loop %d\n",i);
+	{
+		printf("in loop %d\n", i);
 		i++;
 		hasSwapped = 0;
 		curNode = head;
-		for (int j = 0; j < size-1; j++)
+		for (int j = 0; j < size - 1; j++)
 		{
-			printf("in inner loop %d\n",j);
+			printf("in inner loop %d\n", j);
 			if (curNode->data > curNode->next->data)
 			{
 				swapNodes(curNode, curNode->next);
@@ -158,7 +176,8 @@ int sortAllNodes(void)
 			}
 			curNode = curNode->next;
 		}
-		if(hasSwapped == 0){
+		if (hasSwapped == 0)
+		{
 			isSorted = 1;
 		}
 	}
@@ -209,4 +228,31 @@ int swapNodes(Node *cur, Node *next)
 	}
 
 	return 1;
+}
+
+int itterateThroughList(int pos, Node *cur)
+{
+	Node* temp = cur;
+	printf("head's data %d\n", cur->data);
+	for (int i = 0; i <= pos; i++)
+	{
+		cur = temp;
+		printf("start of iterate %d with cur data at %d\n",i, cur->data);
+		if (cur->next == NULL)
+		{
+			return -1;
+		}
+		else if (cur->next->data == -1)
+		{
+			return -1;
+		}
+		else
+		{
+			printf("in proper through\n");
+			temp = cur->next;
+			printf("updated cur\n");
+		}
+	}
+	printf("currents next befor return is %d\n", cur->data);
+	return cur->data;
 }
