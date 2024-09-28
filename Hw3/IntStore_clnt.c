@@ -58,16 +58,12 @@ char **
 checkin_intstore_1(void *argp, CLIENT *clnt)
 {
 	static char *clnt_res;
-	printf("Test7");
 	memset((char *)&clnt_res, 0, sizeof(clnt_res));
-	printf("Test8");
 	if (clnt_call (clnt, checkIn_INTSTORE,
 		(xdrproc_t) xdr_void, (caddr_t) argp,
 		(xdrproc_t) xdr_wrapstring, (caddr_t) &clnt_res,
 		TIMEOUT) != RPC_SUCCESS) {
-		printf("Test9");
 		return (NULL);
 	}
-	printf("Test10");
 	return (&clnt_res);
 }

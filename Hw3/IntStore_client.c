@@ -19,7 +19,6 @@ intstore_prog_1(char *host, arr Arr,char op)
 	int  remove_intstore_1_arg;
 	char * *result_4;
 	char *checkin_intstore_1_arg;
-printf("Test2");
 #ifndef	DEBUG
 	clnt = clnt_create (host, INTSTORE_PROG, INTSTORE_VERS, "udp");
 	if (clnt == NULL) {
@@ -27,15 +26,13 @@ printf("Test2");
 		exit (1);
 	}
 #endif	/* DEBUG */
-printf("Test3");
 if(op == '\0'){
-	printf("Test4");
 	result_4 = checkin_intstore_1((void*)&checkin_intstore_1_arg, clnt);
 	if (result_4 == (char **) NULL) {
 		clnt_perror (clnt, "call failed");
 	}
 	else{
-		printf("%s\n",result_4);
+		printf("%s\n",*result_4);
 	}
 }
 	/*result_1 = append_intstore_1(&append_intstore_1_arg, clnt);
@@ -74,7 +71,6 @@ main (int argc, char *argv[])
 	for(int i = 0; i < 8; i++){
 		aray.Arr[i] = 0;
 	}
-	printf("Test1");
 	intstore_prog_1 (host, aray, '\0');
 exit (0);
 }
