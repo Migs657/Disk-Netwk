@@ -13,11 +13,30 @@
 extern "C" {
 #endif
 
-
 struct arr {
 	int Arr[8];
 };
 typedef struct arr arr;
+
+//most node bas structure from https://www.geeksforgeeks.org/how-to-create-a-linked-list-in-c/
+// Define the structure of Node
+typedef struct Node {
+  
+    // Data field. Can add more data according to our need
+    int data;
+
+    // Pointer to the next node
+    struct Node *next;
+	struct Node *prev;
+} Node;
+
+int printAllNodes(void);
+
+int sortAllNodes(void);
+
+int swapNodes(Node *first, Node *second);
+
+char* getPrompt(void);
 
 #define INTSTORE_PROG 0x31415926
 #define INTSTORE_VERS 1
@@ -36,6 +55,7 @@ extern  char ** remove_intstore_1_svc(int *, struct svc_req *);
 extern  char ** checkin_intstore_1(void *, CLIENT *);
 extern  char ** checkin_intstore_1_svc(void *, struct svc_req *);
 extern int intstore_prog_1_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
+
 
 #else /* K&R C */
 #define APPEND_INTSTORE 1

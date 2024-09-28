@@ -6,14 +6,75 @@
 
 #include "IntStore.h"
 
+Node *head;
+Node *tail;
+int size;
+
 char **
 append_intstore_1_svc(arr *argp, struct svc_req *rqstp)
 {
-	static char * result;
+	printf("top of append \n");
+	static char *result;
 
-	/*
-	 * insert server code here
-	 */
+	Node *first = (Node *)malloc(sizeof(Node));
+	// printf("%d\n",argp->Arr[0]);
+	first->data = argp->Arr[0];
+
+	Node *second = (Node *)malloc(sizeof(Node));
+	second->data = argp->Arr[1];
+
+	Node *third = (Node *)malloc(sizeof(Node));
+	third->data = argp->Arr[3];
+
+	Node *fourth = (Node *)malloc(sizeof(Node));
+	fourth->data = argp->Arr[4];
+
+	Node *fith = (Node *)malloc(sizeof(Node));
+	fith->data = argp->Arr[5];
+
+	Node *sixth = (Node *)malloc(sizeof(Node));
+	sixth->data = argp->Arr[2];
+
+	Node *seventh = (Node *)malloc(sizeof(Node));
+	seventh->data = argp->Arr[6];
+
+	Node *eigth = (Node *)malloc(sizeof(Node));
+	eigth->data = argp->Arr[7];
+
+	first->next = second;
+	second->next = third;
+	third->next = fourth;
+	fourth->next = fith;
+	fith->next = sixth;
+	sixth->next = seventh;
+	seventh->next = eigth;
+
+	second->prev = first;
+	third->prev = second;
+	fourth->prev = third;
+	fith->prev = fourth;
+	sixth->prev = fith;
+	seventh->prev = sixth;
+	eigth->prev = seventh;
+
+	if (head->data == -1)
+	{
+		head = first;
+		tail = eigth;
+	}
+	else
+	{
+		tail->next = first;
+		first->prev = tail;
+		tail = eigth;
+	}
+	tail->next = NULL;
+	size += 8;
+	printAllNodes();
+
+	sortAllNodes();
+
+	printAllNodes();
 
 	return &result;
 }
@@ -21,7 +82,7 @@ append_intstore_1_svc(arr *argp, struct svc_req *rqstp)
 char **
 query_intstore_1_svc(int *argp, struct svc_req *rqstp)
 {
-	static char * result;
+	static char *result;
 
 	/*
 	 * insert server code here
@@ -33,7 +94,7 @@ query_intstore_1_svc(int *argp, struct svc_req *rqstp)
 char **
 remove_intstore_1_svc(int *argp, struct svc_req *rqstp)
 {
-	static char * result;
+	static char *result;
 
 	/*
 	 * insert server code here
@@ -45,9 +106,107 @@ remove_intstore_1_svc(int *argp, struct svc_req *rqstp)
 char **
 checkin_intstore_1_svc(void *argp, struct svc_req *rqstp)
 {
-	static char * result;
-	
-	result = "succesful connection";
+	static char *result;
+	head = (Node *)malloc(sizeof(Node));
+	// Assigning data
+	head->data = -1;
+	head->next = NULL;
+	head->prev = NULL;
+	tail = head;
+	size = 0;
+
+	result = "succesful connection and allocation";
 
 	return &result;
+}
+
+int printAllNodes(void)
+{
+	printf("Linked List: ");
+	Node *temp = head;
+	while (temp)
+	{
+		printf("%d ", temp->data);
+		temp = temp->next;
+	}
+	printf("\n");
+	printf("Done with print\n");
+	return 1;
+}
+
+int sortAllNodes(void)
+{
+	int isSorted = 0;
+	int hasSwapped = 0;
+	int tempInt = tail->data;
+	Node *curNode = head;
+	Node *tempNode;
+	int i = 0;
+	while (isSorted == 0)
+	{	printf("in loop %d\n",i);
+		i++;
+		hasSwapped = 0;
+		curNode = head;
+		for (int j = 0; j < size-1; j++)
+		{
+			printf("in inner loop %d\n",j);
+			if (curNode->data > curNode->next->data)
+			{
+				swapNodes(curNode, curNode->next);
+				hasSwapped = 1;
+				curNode = curNode->prev;
+			}
+			curNode = curNode->next;
+		}
+		if(hasSwapped == 0){
+			isSorted = 1;
+		}
+	}
+	return 1;
+}
+
+// specifically swap ajacent nodes
+int swapNodes(Node *cur, Node *next)
+{
+	Node *temp;
+	// check if cur head and next is tail
+	if (cur->prev == NULL && next->next == NULL)
+	{
+		head = next;
+		head->prev = NULL;
+		tail = cur;
+		cur->next = NULL;
+		cur->prev = next;
+		next->next = cur;
+	}
+	else if (cur->prev == NULL)
+	{
+		head = next;
+		head->prev = NULL;
+		cur->next = next->next;
+		next->next = cur;
+		cur->prev = next;
+		cur->next->prev = cur;
+	}
+	else if (next->next == NULL)
+	{
+		tail = cur;
+		tail->next = NULL;
+		next->prev = cur->prev;
+		cur->prev = next;
+		next->next = cur;
+		next->prev->next = next;
+	}
+	else
+	{
+		temp = cur->prev;
+		next->prev = temp;
+		cur->next = next->next;
+		next->next = cur;
+		cur->prev = next;
+		cur->next->prev = cur;
+		temp->next = next;
+	}
+
+	return 1;
 }
