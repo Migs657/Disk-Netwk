@@ -97,12 +97,12 @@ query_intstore_1_svc(int *argp, struct svc_req *rqstp)
 	 * insert server code here
 	 */
 	printf("befor itteration\n");
-	atPlace = itterateThroughList(*argp,cur);
+	atPlace = itterateThroughList(*argp, cur);
 	printf("done with itteration\n");
 	sprintf(buff, "%d", atPlace);
 	printf("what in buff %s\n", buff);
 	result = buff;
-	//itoa(argp,result, 10);
+	// itoa(argp,result, 10);
 	printf("sending back %s\n", result);
 	return &result;
 }
@@ -232,26 +232,32 @@ int swapNodes(Node *cur, Node *next)
 
 int itterateThroughList(int pos, Node *cur)
 {
-	Node* temp = cur;
+	Node *temp = cur;
 	printf("head's data %d\n", cur->data);
+	if (cur->next == NULL)
+	{
+		return -1;
+	}
+	else if (cur->next->data == -1)
+	{
+		return -1;
+	}
+
 	for (int i = 0; i <= pos; i++)
 	{
 		cur = temp;
-		printf("start of iterate %d with cur data at %d\n",i, cur->data);
-		if (cur->next == NULL)
+		printf("start of iterate %d with cur data at %d\n", i, cur->data);
+
+		printf("in proper through\n");
+		if (cur->next != NULL)
 		{
-			return -1;
-		}
-		else if (cur->next->data == -1)
-		{
-			return -1;
-		}
-		else
-		{
-			printf("in proper through\n");
 			temp = cur->next;
-			printf("updated cur\n");
 		}
+		else if (i != pos && cur->next == NULL){
+			return -1;
+		}
+
+		printf("updated cur\n");
 	}
 	printf("currents next befor return is %d\n", cur->data);
 	return cur->data;
