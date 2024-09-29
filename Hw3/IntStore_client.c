@@ -26,6 +26,7 @@ void intstore_prog_1(char *host, arr ary, char *op)
 		exit(1);
 	}
 #endif /* DEBUG */
+	printf("InProgram\n");
 	if (strcmp(op, "") == 0)
 	{
 		result_4 = checkin_intstore_1((void *)&checkin_intstore_1_arg, clnt);
@@ -57,24 +58,27 @@ void intstore_prog_1(char *host, arr ary, char *op)
 		{
 			clnt_perror(clnt, "call failed");
 		}
-		if(strcmp(*result_2, "-1") == 0){
+		if (strcmp(*result_2, "-1") == 0)
+		{
 			printf("out of bouds\n");
 		}
-		else{
-			printf("at pose %d we have %s\n",ary.Arr[0], *result_2);
+		else
+		{
+			printf("at pose %d we have %s\n", ary.Arr[0], *result_2);
 		}
-		
+	}
+	else if (strcmp(op, "remove") == 0)
+	{
+		printf("in remove\n");
+		remove_intstore_1_arg = ary.Arr[0];
+		result_3 = remove_intstore_1(&remove_intstore_1_arg, clnt);
+		if (result_3 == (char **)NULL)
+		{
+			clnt_perror(clnt, "call failed");
+		}
+		printf("at pose %d we have %s\n", ary.Arr[0], *result_2);
 	}
 
-	/*
-	result_3 = remove_intstore_1(&remove_intstore_1_arg, clnt);
-	if (result_3 == (char **) NULL) {
-		clnt_perror (clnt, "call failed");
-	}
-	result_4 = checkin_intstore_1((void*)&checkin_intstore_1_arg, clnt);
-	if (result_4 == (char **) NULL) {
-		clnt_perror (clnt, "call failed");
-	}*/
 #ifndef DEBUG
 	clnt_destroy(clnt);
 #endif /* DEBUG */
@@ -174,6 +178,18 @@ int main(int argc, char *argv[])
 		else if (strcmp(op, "query") == 0)
 		{
 			printf("in main query\n");
+			tempArg = strtok(NULL, " ");
+			printf("Test current arg %s\n", tempArg);
+			if (tempArg != NULL)
+			{
+				aray.Arr[0] = atoi(tempArg);
+				printf("Test current in Array %d\n", aray.Arr[0]);
+				intstore_prog_1(host, aray, op);
+			}
+		}
+		else if (strcmp(op, "remove") == 0)
+		{
+			printf("in main remove\n");
 			tempArg = strtok(NULL, " ");
 			printf("Test current arg %s\n", tempArg);
 			if (tempArg != NULL)

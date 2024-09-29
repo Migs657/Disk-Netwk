@@ -70,6 +70,7 @@ append_intstore_1_svc(arr *argp, struct svc_req *rqstp)
 		first->prev = tail;
 		tail = eigth;
 	}
+	head->prev = NULL;
 	tail->next = NULL;
 	size += 8;
 	printAllNodes();
@@ -93,9 +94,6 @@ query_intstore_1_svc(int *argp, struct svc_req *rqstp)
 
 	int atPlace;
 
-	/*
-	 * insert server code here
-	 */
 	printf("befor itteration\n");
 	atPlace = itterateThroughList(*argp, cur);
 	printf("done with itteration\n");
@@ -111,12 +109,72 @@ char **
 remove_intstore_1_svc(int *argp, struct svc_req *rqstp)
 {
 	static char *result;
-	Node *cur;
+	Node *cur = head;
+	Node *temp = cur;
+	int atPlace;
+	char *outOfRange = "Out of range";
 
-	/*
-	 * insert server code here
-	 */
+	printf("head's data %d\n", cur->data);
+	if (cur->next == NULL || cur->data == -1)
+	{
+		result = outOfRange;
+		return &result;
+	}
+	else if (cur->next->data == -1)
+	{
+		result = outOfRange;
+		return &result;
+	}
 
+	for (int i = 0; i <= *argp; i++)
+	{
+		cur = temp;
+		printf("start of iterate %d with cur data at %d\n", i, cur->data);
+
+		if (cur->next != NULL)
+		{
+			printf("in if\n");
+			temp = cur->next;
+		}
+		else if (i != *argp && cur->next == NULL)
+		{
+			printf("in else if\n");
+			result = outOfRange;
+			return &result;
+		}
+
+		printf("updated cur\n");
+	}
+	printf("currents data befor return is %d\n", cur->data);
+	if (cur->prev != NULL)
+	{
+		printf("if cur->prev != NULL\n");
+		cur->prev->next = cur->next;
+	}
+	if (cur->next != NULL)
+	{
+		printf("if cur->next != NULL\n");
+		cur->next->prev = cur->prev;
+	}
+	if (cur->prev == NULL && cur->next != NULL)
+	{
+		head = cur->next;
+	}
+	if (cur->next == NULL && cur->prev != NULL)
+	{
+		tail = cur->prev;
+	}
+	if (cur->next == NULL && cur->prev == NULL)
+	{
+		head->data = -1;
+		head->next = NULL;
+		head->prev = NULL;
+		tail = head;
+	}
+	free(cur);
+	size--;
+	printf("befor print\n");
+	printAllNodes();
 	return &result;
 }
 
@@ -253,7 +311,8 @@ int itterateThroughList(int pos, Node *cur)
 		{
 			temp = cur->next;
 		}
-		else if (i != pos && cur->next == NULL){
+		else if (i != pos && cur->next == NULL)
+		{
 			return -1;
 		}
 
