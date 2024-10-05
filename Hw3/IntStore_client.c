@@ -18,6 +18,7 @@ void intstore_prog_1(char *host, arr ary, char *op)
 	int remove_intstore_1_arg;
 	char **result_4;
 	char *checkin_intstore_1_arg;
+
 #ifndef DEBUG
 	clnt = clnt_create(host, INTSTORE_PROG, INTSTORE_VERS, "udp");
 	if (clnt == NULL)
@@ -26,7 +27,8 @@ void intstore_prog_1(char *host, arr ary, char *op)
 		exit(1);
 	}
 #endif /* DEBUG */
-	printf("InProgram\n");
+	//printf("InProgram\n");
+	//blank op happens at beggining to check connection and get head and tail set if not already
 	if (strcmp(op, "") == 0)
 	{
 		result_4 = checkin_intstore_1((void *)&checkin_intstore_1_arg, clnt);
@@ -39,9 +41,11 @@ void intstore_prog_1(char *host, arr ary, char *op)
 			printf("%s\n", *result_4);
 		}
 	}
+	//now for if we are appending
 	else if (strcmp(op, "append") == 0)
 	{
-		printf("In append\n");
+		//printf("In append\n");
+		//put in the argument
 		append_intstore_1_arg = ary;
 		result_1 = append_intstore_1(&append_intstore_1_arg, clnt);
 		if (result_1 == (char **)NULL)
@@ -51,20 +55,22 @@ void intstore_prog_1(char *host, arr ary, char *op)
 	}
 	else if (strcmp(op, "query") == 0)
 	{
-		printf("In query\n");
+		//printf("In query\n");
+		//just need first element of array
 		query_intstore_1_arg = ary.Arr[0];
 		result_2 = query_intstore_1(&query_intstore_1_arg, clnt);
 		if (result_2 == (char **)NULL)
 		{
 			clnt_perror(clnt, "call failed");
 		}
-		if (strcmp(*result_2, "-1") == 0)
+		/*if (strcmp(*result_2, "-1") == 0)
 		{
 			printf("out of bouds\n");
-		}
+		}*/
 		else
 		{
-			printf("at pose %d we have %s\n", ary.Arr[0], *result_2);
+			//printf("at pose %d we have %s\n", ary.Arr[0], *result_2);
+			printf("%s\n",*result_2);
 		}
 	}
 	else if (strcmp(op, "remove") == 0)
@@ -144,7 +150,7 @@ int main(int argc, char *argv[])
 			
 			//see which argument on for append
 			argCounter = 0;
-			i = 0;
+
 			// should be first check for null
 			tempArg = strtok(NULL, " ");
 			//printf("Test current arg %s\n", tempArg);
@@ -156,35 +162,42 @@ int main(int argc, char *argv[])
 			}
 			while (tempArg != NULL)
 			{
-				//first time through is 1
+				//first time through is 1 and 8 last time
 				argCounter++;
-				i++;
+				//see if we put in too many numbers
 				if (argCounter > 8)
 				{
 					printf("Too many arguments\n");
 					break;
 				}
-				printf("arg %d is %s\n", i, tempArg);
+				//printf("arg %d is %s\n", argCounter, tempArg);
+				//get next element
 				tempArg = strtok(NULL, " ");
+				//make sure it isn't null
 				if (tempArg != NULL)
 				{
-					aray.Arr[i] = atoi(tempArg);
+					//add it to the array
+					aray.Arr[argCounter] = atoi(tempArg);
 				}
 			}
-			printf("integers sent will be ");
+
+			/*printf("integers sent will be ");
 			for (i = 0; i < argCounter; i++)
 			{
 				printf("%d, ", aray.Arr[i]);
 			}
 			printf("\n");
-			printf("arg counter %d\n", argCounter);
-			if (argCounter != 8)
+			printf("arg counter %d\n", argCounter);*/
+			//due to a
+			if (argCounter < 8)
 			{
 				printf("Too few arguments\n");
 			}
 			else
 			{
-				printf("current op %s\n", op);
+				//printf("current op %s\n", op);
+
+				//send the request
 				intstore_prog_1(host, aray, op);
 			}
 			printf("\n");
