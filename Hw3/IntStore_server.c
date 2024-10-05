@@ -8,16 +8,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+int itterateThroughList(int pos, Node *cur);
+int printAllNodes(void);
+
 Node *head;
 Node *tail;
-int size;
+int size = 0;
+int hasInitialized = 0;
 
 char **
 append_intstore_1_svc(arr *argp, struct svc_req *rqstp)
 {
-	printf("top of append \n");
+	// printf("top of append \n");
 	static char *result;
-
+	// alocateall new nodes and assign them data
 	Node *first = (Node *)malloc(sizeof(Node));
 	// printf("%d\n",argp->Arr[0]);
 	first->data = argp->Arr[0];
@@ -26,16 +30,16 @@ append_intstore_1_svc(arr *argp, struct svc_req *rqstp)
 	second->data = argp->Arr[1];
 
 	Node *third = (Node *)malloc(sizeof(Node));
-	third->data = argp->Arr[3];
+	third->data = argp->Arr[2];
 
 	Node *fourth = (Node *)malloc(sizeof(Node));
-	fourth->data = argp->Arr[4];
+	fourth->data = argp->Arr[3];
 
 	Node *fith = (Node *)malloc(sizeof(Node));
-	fith->data = argp->Arr[5];
+	fith->data = argp->Arr[4];
 
 	Node *sixth = (Node *)malloc(sizeof(Node));
-	sixth->data = argp->Arr[2];
+	sixth->data = argp->Arr[5];
 
 	Node *seventh = (Node *)malloc(sizeof(Node));
 	seventh->data = argp->Arr[6];
@@ -43,6 +47,7 @@ append_intstore_1_svc(arr *argp, struct svc_req *rqstp)
 	Node *eigth = (Node *)malloc(sizeof(Node));
 	eigth->data = argp->Arr[7];
 
+	// connect new nodes to their next
 	first->next = second;
 	second->next = third;
 	third->next = fourth;
@@ -51,6 +56,7 @@ append_intstore_1_svc(arr *argp, struct svc_req *rqstp)
 	sixth->next = seventh;
 	seventh->next = eigth;
 
+	// connect new to previous
 	second->prev = first;
 	third->prev = second;
 	fourth->prev = third;
@@ -59,7 +65,8 @@ append_intstore_1_svc(arr *argp, struct svc_req *rqstp)
 	seventh->prev = sixth;
 	eigth->prev = seventh;
 
-	if (head->data == -1)
+	// if size is 0 then we need this to be the first to be new head, and old head dealocated
+	if (size == 0)
 	{
 		head = first;
 		tail = eigth;
@@ -70,13 +77,14 @@ append_intstore_1_svc(arr *argp, struct svc_req *rqstp)
 		first->prev = tail;
 		tail = eigth;
 	}
+	head->prev = NULL;
 	tail->next = NULL;
 	size += 8;
 	printAllNodes();
 
-	sortAllNodes();
+	// sortAllNodes();
 
-	printAllNodes();
+	// printAllNodes();
 
 	result = "success";
 
@@ -93,17 +101,32 @@ query_intstore_1_svc(int *argp, struct svc_req *rqstp)
 
 	int atPlace;
 
-	/*
-	 * insert server code here
-	 */
-	printf("befor itteration\n");
+	char *outOfRange = "Out of range";
+	char *empty = "Store is empty";
+
+	// printf("size is %d\n", size);
+	// make sure that the storage exists
+	if (size == 0)
+	{
+		result = empty;
+		return &result;
+	}
+	// make sure in range
+	else if (*argp < 0 || *argp > size)
+	{
+		result = outOfRange;
+		return &result;
+	}
+
+	// printf("befor itteration\n");
+	// find the specific location
 	atPlace = itterateThroughList(*argp, cur);
-	printf("done with itteration\n");
+	// printf("done with itteration\n");
+	// put result in buff
 	sprintf(buff, "%d", atPlace);
-	printf("what in buff %s\n", buff);
+	// printf("what in buff %s\n", buff);
 	result = buff;
-	// itoa(argp,result, 10);
-	printf("sending back %s\n", result);
+	// printf("sending back %s\n", result);
 	return &result;
 }
 
@@ -111,12 +134,79 @@ char **
 remove_intstore_1_svc(int *argp, struct svc_req *rqstp)
 {
 	static char *result;
-	Node *cur;
+	Node *cur = head;
+	Node *temp = cur;
+	int atPlace;
+	char *outOfRange = "Out of range";
+	char *empty = "Empty";
+	char *success = "Success";
 
-	/*
-	 * insert server code here
-	 */
+	//printf("size is %d\n", size);
+	// make sure that the storage exists
+	if (size == 0)
+	{
+		result = empty;
+		return &result;
+	}
+	// make sure in range
+	else if (*argp < 0 || *argp > size)
+	{
+		result = outOfRange;
+		return &result;
+	}
 
+	
+	for (int i = 0; i <= *argp; i++)
+	{
+		cur = temp;
+		//printf("start of iterate %d with cur data at %d\n", i, cur->data);
+
+		if (cur->next != NULL)
+		{
+			//printf("in if\n");
+			temp = cur->next;
+		}
+		else if (i != *argp && cur->next == NULL)
+		{
+			//printf("in else if\n");
+			result = outOfRange;
+			return &result;
+		}
+
+		//printf("updated cur\n");
+	}
+
+	//printf("currents data befor return is %d\n", cur->data);
+	//check if not head
+	if (cur->prev != NULL)
+	{
+		//printf("if cur->prev != NULL\n");
+		//make prev see next as cur's next
+		cur->prev->next = cur->next;
+	}
+	//check if not head
+	if (cur->next != NULL)
+	{
+		//printf("if cur->next != NULL\n");
+		//make next see prev as cur's prev
+		cur->next->prev = cur->prev;
+	}
+	//if head and not tail
+	if (cur->prev == NULL && cur->next != NULL)
+	{
+		head = cur->next;
+	}
+	//if tail and not head
+	if (cur->next == NULL && cur->prev != NULL)
+	{
+		tail = cur->prev;
+	}
+	//if both tail and head we just free cur and get new head and tail when adding more
+	free(cur);
+	size--;
+	printf("befor print\n");
+	printAllNodes();
+	result = success;
 	return &result;
 }
 
@@ -124,16 +214,23 @@ char **
 checkin_intstore_1_svc(void *argp, struct svc_req *rqstp)
 {
 	static char *result;
-	head = (Node *)malloc(sizeof(Node));
-	// Assigning data
-	head->data = -1;
-	head->next = NULL;
-	head->prev = NULL;
-	tail = head;
-	size = 0;
-
-	result = "succesful connection and allocation";
-
+	// don't want a memory leak or restart between connections so this check
+	/*if (hasInitialized == 0)
+	{
+		head = (Node *)malloc(sizeof(Node));
+		// Assigning data
+		head->data = -1;
+		head->next = NULL;
+		head->prev = NULL;
+		tail = head;
+		result = "succesful connection and allocation";
+		hasInitialized = 1;
+	}
+	else
+	{
+		result = "succesful connection";
+	}*/
+	result = "succesful connection";
 	return &result;
 }
 
@@ -151,7 +248,7 @@ int printAllNodes(void)
 	return 1;
 }
 
-int sortAllNodes(void)
+/*int sortAllNodes(void)
 {
 	int isSorted = 0;
 	int hasSwapped = 0;
@@ -182,10 +279,10 @@ int sortAllNodes(void)
 		}
 	}
 	return 1;
-}
+}*/
 
 // specifically swap ajacent nodes
-int swapNodes(Node *cur, Node *next)
+/*int swapNodes(Node *cur, Node *next)
 {
 	Node *temp;
 	// check if cur head and next is tail
@@ -228,37 +325,29 @@ int swapNodes(Node *cur, Node *next)
 	}
 
 	return 1;
-}
+}*/
 
 int itterateThroughList(int pos, Node *cur)
 {
 	Node *temp = cur;
-	printf("head's data %d\n", cur->data);
-	if (cur->next == NULL)
-	{
-		return -1;
-	}
-	else if (cur->next->data == -1)
-	{
-		return -1;
-	}
 
 	for (int i = 0; i <= pos; i++)
 	{
 		cur = temp;
-		printf("start of iterate %d with cur data at %d\n", i, cur->data);
+		// printf("start of iterate %d with cur data at %d\n", i, cur->data);
 
-		printf("in proper through\n");
+		// printf("in proper through\n");
 		if (cur->next != NULL)
 		{
 			temp = cur->next;
 		}
-		else if (i != pos && cur->next == NULL){
+		else if (i != pos && cur->next == NULL)
+		{
 			return -1;
 		}
 
-		printf("updated cur\n");
+		// printf("updated cur\n");
 	}
-	printf("currents next befor return is %d\n", cur->data);
+	// printf("currents next befor return is %d\n", cur->data);
 	return cur->data;
 }

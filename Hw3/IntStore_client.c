@@ -18,6 +18,7 @@ void intstore_prog_1(char *host, arr ary, char *op)
 	int remove_intstore_1_arg;
 	char **result_4;
 	char *checkin_intstore_1_arg;
+
 #ifndef DEBUG
 	clnt = clnt_create(host, INTSTORE_PROG, INTSTORE_VERS, "udp");
 	if (clnt == NULL)
@@ -26,6 +27,8 @@ void intstore_prog_1(char *host, arr ary, char *op)
 		exit(1);
 	}
 #endif /* DEBUG */
+	//printf("InProgram\n");
+	//blank op happens at beggining to check connection and get head and tail set if not already
 	if (strcmp(op, "") == 0)
 	{
 		result_4 = checkin_intstore_1((void *)&checkin_intstore_1_arg, clnt);
@@ -38,9 +41,11 @@ void intstore_prog_1(char *host, arr ary, char *op)
 			printf("%s\n", *result_4);
 		}
 	}
+	//now for if we are appending
 	else if (strcmp(op, "append") == 0)
 	{
-		printf("In append\n");
+		//printf("In append\n");
+		//put in the argument
 		append_intstore_1_arg = ary;
 		result_1 = append_intstore_1(&append_intstore_1_arg, clnt);
 		if (result_1 == (char **)NULL)
@@ -50,31 +55,36 @@ void intstore_prog_1(char *host, arr ary, char *op)
 	}
 	else if (strcmp(op, "query") == 0)
 	{
-		printf("In query\n");
+		//printf("In query\n");
+		//just need first element of array
 		query_intstore_1_arg = ary.Arr[0];
 		result_2 = query_intstore_1(&query_intstore_1_arg, clnt);
 		if (result_2 == (char **)NULL)
 		{
 			clnt_perror(clnt, "call failed");
 		}
-		if(strcmp(*result_2, "-1") == 0){
+		/*if (strcmp(*result_2, "-1") == 0)
+		{
 			printf("out of bouds\n");
+		}*/
+		else
+		{
+			//printf("at pose %d we have %s\n", ary.Arr[0], *result_2);
+			printf("%s\n",*result_2);
 		}
-		else{
-			printf("at pose %d we have %s\n",ary.Arr[0], *result_2);
+	}
+	else if (strcmp(op, "remove") == 0)
+	{
+		printf("in remove\n");
+		remove_intstore_1_arg = ary.Arr[0];
+		result_3 = remove_intstore_1(&remove_intstore_1_arg, clnt);
+		if (result_3 == (char **)NULL)
+		{
+			clnt_perror(clnt, "call failed");
 		}
-		
+		printf("at pose %d we have %s\n", ary.Arr[0], *result_2);
 	}
 
-	/*
-	result_3 = remove_intstore_1(&remove_intstore_1_arg, clnt);
-	if (result_3 == (char **) NULL) {
-		clnt_perror (clnt, "call failed");
-	}
-	result_4 = checkin_intstore_1((void*)&checkin_intstore_1_arg, clnt);
-	if (result_4 == (char **) NULL) {
-		clnt_perror (clnt, "call failed");
-	}*/
 #ifndef DEBUG
 	clnt_destroy(clnt);
 #endif /* DEBUG */
@@ -89,84 +99,105 @@ int main(int argc, char *argv[])
 		printf("usage: %s server_host\n", argv[0]);
 		exit(1);
 	}
+	//host is stored
 	host = argv[1];
+	//initialize array to make it easier to pass
 	arr aray;
 	for (int i = 0; i < 8; i++)
 	{
 		aray.Arr[i] = 0;
 	}
+	//double check connection to server
 	intstore_prog_1(host, aray, "\0");
 	int leave = 0;
-
+	//set up while loop so can stay in server indefinently 
 	while (leave != -1)
 	{
+		//each int can be up to 11 carecters long. so 8*11+8+6 = 102 will be most charecter for input so 500 is more than enough
 		char arguments[500];
+		//store operation
 		char *op;
+		//as iterating though arguments
 		char *tempArg;
+		//make sure correct number of arguments for append
 		int argCounter;
 		int i;
-		int len = 0;
+		//int len = 0;
 
+		//instructions
 		printf("Please enter one of the following with each argument seperated by a space\n"
 			   "Enter append followed by 8 integers to append those integers to ordered list.\n"
 			   "Enter query followed by an integer for the integer stored at at that particular. position(starting at 0)\n"
 			   "Enter remove followed by an integer to remove an integer stored at that locatoin position(starting at 0)\n"
 			   "Enter -1 to end this client program\n");
-
+		//see imput
 		scanf("%[^\n]s", arguments);
-		while ((getchar()) != '\n')
-			;
-		// printf("Test1\n");
-		printf("%s\n", arguments);
+		//this getchar somehow makes this not go off the rails
+		while ((getchar()) != '\n');
+		//printf("%s\n", arguments);
 		// printf("%c\n",arguments[0]);
+		//git operations (append, query, removed)
 		op = strtok(arguments, " ");
-		printf("current op %s and compared to append %d\n", op, strcmp(op, "append"));
+		//printf("current op %s and compared to append %d\n", op, strcmp(op, "append"));
+
+		//conditon of append
 		if (strcmp(op, "append") == 0)
 		{
-			printf("In append client area\n");
+			//printf("In append client area\n");
 			// printf("%s\n", tempArg);
 			//  len = strlen(tempArg);
 			//  printf("tempArg len is %d\n", len);
+			
+			//see which argument on for append
 			argCounter = 0;
-			i = 0;
-			// should be first may be null
+
+			// should be first check for null
 			tempArg = strtok(NULL, " ");
-			printf("Test current arg %s\n", tempArg);
+			//printf("Test current arg %s\n", tempArg);
 			if (tempArg != NULL)
 			{
+				//put first element of array to be sent to first arg
 				aray.Arr[i] = atoi(tempArg);
-				printf("Test current in Array %d\n", aray.Arr[i]);
+				//printf("Test current in Array %d\n", aray.Arr[i]);
 			}
 			while (tempArg != NULL)
 			{
+				//first time through is 1 and 8 last time
 				argCounter++;
-				i++;
+				//see if we put in too many numbers
 				if (argCounter > 8)
 				{
 					printf("Too many arguments\n");
 					break;
 				}
-				printf("arg %d is %s\n", i, tempArg);
+				//printf("arg %d is %s\n", argCounter, tempArg);
+				//get next element
 				tempArg = strtok(NULL, " ");
+				//make sure it isn't null
 				if (tempArg != NULL)
 				{
-					aray.Arr[i] = atoi(tempArg);
+					//add it to the array
+					aray.Arr[argCounter] = atoi(tempArg);
 				}
 			}
-			printf("integers sent will be ");
+
+			/*printf("integers sent will be ");
 			for (i = 0; i < argCounter; i++)
 			{
 				printf("%d, ", aray.Arr[i]);
 			}
 			printf("\n");
-			printf("arg counter %d\n", argCounter);
-			if (argCounter != 8)
+			printf("arg counter %d\n", argCounter);*/
+			//due to a
+			if (argCounter < 8)
 			{
 				printf("Too few arguments\n");
 			}
 			else
 			{
-				printf("current op %s\n", op);
+				//printf("current op %s\n", op);
+
+				//send the request
 				intstore_prog_1(host, aray, op);
 			}
 			printf("\n");
@@ -174,6 +205,18 @@ int main(int argc, char *argv[])
 		else if (strcmp(op, "query") == 0)
 		{
 			printf("in main query\n");
+			tempArg = strtok(NULL, " ");
+			printf("Test current arg %s\n", tempArg);
+			if (tempArg != NULL)
+			{
+				aray.Arr[0] = atoi(tempArg);
+				printf("Test current in Array %d\n", aray.Arr[0]);
+				intstore_prog_1(host, aray, op);
+			}
+		}
+		else if (strcmp(op, "remove") == 0)
+		{
+			printf("in main remove\n");
 			tempArg = strtok(NULL, " ");
 			printf("Test current arg %s\n", tempArg);
 			if (tempArg != NULL)

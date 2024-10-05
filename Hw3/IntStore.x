@@ -15,6 +15,12 @@
 struct arr{
     int Arr[8];
 };
+struct Node{
+    int data;
+
+    struct Node* next;
+    struct Node* prev;
+};
 
 program INTSTORE_PROG {
  version INTSTORE_VERS {
@@ -25,4 +31,4 @@ program INTSTORE_PROG {
  } = 1; /* version number = 1 */
 
 
-} = 0x31415926; 
+} = 0x315E91E3; 
