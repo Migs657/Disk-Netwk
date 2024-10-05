@@ -58,6 +58,7 @@ char **
 checkin_intstore_1(void *argp, CLIENT *clnt)
 {
 	static char *clnt_res;
+
 	memset((char *)&clnt_res, 0, sizeof(clnt_res));
 	if (clnt_call (clnt, checkIn_INTSTORE,
 		(xdrproc_t) xdr_void, (caddr_t) argp,

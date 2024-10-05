@@ -93,56 +93,70 @@ int main(int argc, char *argv[])
 		printf("usage: %s server_host\n", argv[0]);
 		exit(1);
 	}
+	//host is stored
 	host = argv[1];
+	//initialize array to make it easier to pass
 	arr aray;
 	for (int i = 0; i < 8; i++)
 	{
 		aray.Arr[i] = 0;
 	}
+	//double check connection to server
 	intstore_prog_1(host, aray, "\0");
 	int leave = 0;
-
+	//set up while loop so can stay in server indefinently 
 	while (leave != -1)
 	{
+		//each int can be up to 11 carecters long. so 8*11+8+6 = 102 will be most charecter for input so 500 is more than enough
 		char arguments[500];
+		//store operation
 		char *op;
+		//as iterating though arguments
 		char *tempArg;
+		//make sure correct number of arguments for append
 		int argCounter;
 		int i;
-		int len = 0;
+		//int len = 0;
 
+		//instructions
 		printf("Please enter one of the following with each argument seperated by a space\n"
 			   "Enter append followed by 8 integers to append those integers to ordered list.\n"
 			   "Enter query followed by an integer for the integer stored at at that particular. position(starting at 0)\n"
 			   "Enter remove followed by an integer to remove an integer stored at that locatoin position(starting at 0)\n"
 			   "Enter -1 to end this client program\n");
-
+		//see imput
 		scanf("%[^\n]s", arguments);
-		while ((getchar()) != '\n')
-			;
-		// printf("Test1\n");
-		printf("%s\n", arguments);
+		//this getchar somehow makes this not go off the rails
+		while ((getchar()) != '\n');
+		//printf("%s\n", arguments);
 		// printf("%c\n",arguments[0]);
+		//git operations (append, query, removed)
 		op = strtok(arguments, " ");
-		printf("current op %s and compared to append %d\n", op, strcmp(op, "append"));
+		//printf("current op %s and compared to append %d\n", op, strcmp(op, "append"));
+
+		//conditon of append
 		if (strcmp(op, "append") == 0)
 		{
-			printf("In append client area\n");
+			//printf("In append client area\n");
 			// printf("%s\n", tempArg);
 			//  len = strlen(tempArg);
 			//  printf("tempArg len is %d\n", len);
+			
+			//see which argument on for append
 			argCounter = 0;
 			i = 0;
-			// should be first may be null
+			// should be first check for null
 			tempArg = strtok(NULL, " ");
-			printf("Test current arg %s\n", tempArg);
+			//printf("Test current arg %s\n", tempArg);
 			if (tempArg != NULL)
 			{
+				//put first element of array to be sent to first arg
 				aray.Arr[i] = atoi(tempArg);
-				printf("Test current in Array %d\n", aray.Arr[i]);
+				//printf("Test current in Array %d\n", aray.Arr[i]);
 			}
 			while (tempArg != NULL)
 			{
+				//first time through is 1
 				argCounter++;
 				i++;
 				if (argCounter > 8)

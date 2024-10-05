@@ -53,3 +53,17 @@ xdr_arr (XDR *xdrs, arr *objp)
 		 return FALSE;
 	return TRUE;
 }
+
+bool_t
+xdr_Node (XDR *xdrs, Node *objp)
+{
+	register int32_t *buf;
+
+	 if (!xdr_int (xdrs, &objp->data))
+		 return FALSE;
+	 if (!xdr_pointer (xdrs, (char **)&objp->next, sizeof (Node), (xdrproc_t) xdr_Node))
+		 return FALSE;
+	 if (!xdr_pointer (xdrs, (char **)&objp->prev, sizeof (Node), (xdrproc_t) xdr_Node))
+		 return FALSE;
+	return TRUE;
+}

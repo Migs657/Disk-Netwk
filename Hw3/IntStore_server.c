@@ -8,9 +8,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+int itterateThroughList(int pos, Node *cur);
+int printAllNodes(void);
+
+
 Node *head;
 Node *tail;
-int size;
+int size = 0;
+int hasInitialized = 0;
 
 char **
 append_intstore_1_svc(arr *argp, struct svc_req *rqstp)
@@ -75,9 +80,9 @@ append_intstore_1_svc(arr *argp, struct svc_req *rqstp)
 	size += 8;
 	printAllNodes();
 
-	sortAllNodes();
+	//sortAllNodes();
 
-	printAllNodes();
+	//printAllNodes();
 
 	result = "success";
 
@@ -182,15 +187,21 @@ char **
 checkin_intstore_1_svc(void *argp, struct svc_req *rqstp)
 {
 	static char *result;
+	if(hasInitialized == 0){
 	head = (Node *)malloc(sizeof(Node));
 	// Assigning data
 	head->data = -1;
 	head->next = NULL;
 	head->prev = NULL;
 	tail = head;
-	size = 0;
-
 	result = "succesful connection and allocation";
+	hasInitialized = 1;
+	}
+	else{
+		result = "succesful connection";
+	}
+
+	
 
 	return &result;
 }
@@ -209,7 +220,7 @@ int printAllNodes(void)
 	return 1;
 }
 
-int sortAllNodes(void)
+/*int sortAllNodes(void)
 {
 	int isSorted = 0;
 	int hasSwapped = 0;
@@ -240,10 +251,10 @@ int sortAllNodes(void)
 		}
 	}
 	return 1;
-}
+}*/
 
 // specifically swap ajacent nodes
-int swapNodes(Node *cur, Node *next)
+/*int swapNodes(Node *cur, Node *next)
 {
 	Node *temp;
 	// check if cur head and next is tail
@@ -286,7 +297,7 @@ int swapNodes(Node *cur, Node *next)
 	}
 
 	return 1;
-}
+}*/
 
 int itterateThroughList(int pos, Node *cur)
 {
